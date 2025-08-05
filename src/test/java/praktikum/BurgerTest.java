@@ -83,15 +83,26 @@ public class BurgerTest {
     }
 
     @Test
-    @DisplayName("Чек содержит информацию о бургере")
-    void testReceiptOutput() {
+    @DisplayName("Чек содержит информацию о бургере и имеет правильный формат")
+    void testReceiptOutputCorrectFormat() {
         burger.setBuns(bun);
         burger.addIngredient(sauce);
+        burger.addIngredient(filling);
 
-        String receipt = burger.getReceipt();
+        String expectedReceipt = String.format(
+                        "(==== %s ====)%n" +
+                        "= %s %s =%n" +
+                        "= %s %s =%n" +
+                        "(==== %s ====)%n%n" +
+                                "Price: %f%n",
+                bun.getName(),
+                sauce.getType().toString().toLowerCase(), sauce.getName(),
+                filling.getType().toString().toLowerCase(), filling.getName(),
+                bun.getName(),
+                burger.getPrice()
+        );
+        String actualReceipt = burger.getReceipt();
 
-        assertTrue(receipt.contains("Mock Bun"), "Чек должен содержать имя булки");
-        assertTrue(receipt.contains("= sauce Mock Sauce ="), "Чек должен содержать описание ингредиента");
-        assertTrue(receipt.contains("Price: "), "Чек должен содержать цену");
+        assertEquals(expectedReceipt, actualReceipt, "Формат и содержимое чека не соответствуют ожидаемому.");
     }
 }
